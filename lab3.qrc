@@ -4,5 +4,10 @@
         <file>image/return.png</file>
         <file>image/logout.png</file>
         <file>image/return (1).png</file>
+        <file>image/back.png</file>
+        <file>image/delet.png</file>
+        <file>image/edit.png</file>
+        <file>image/new.png</file>
+        <file>image/search.png</file>
     </qresource>
 </RCC>
