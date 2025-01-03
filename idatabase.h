@@ -18,6 +18,9 @@ public:
     bool initPatientModel();
     QSqlTableModel *patientTabModel;
     QItemSelectionModel *thePatientSelection;
+    bool initdoctorModel();
+    QSqlTableModel *doctorTabModel;
+    QItemSelectionModel *thedoctorSelection;
     QString userLogin(QString userName, QString password);
 
     bool searchPatient(QString filter);
@@ -25,6 +28,12 @@ public:
     bool subitPatientEdit();
     void revertPatientEdit();
     int addNewPatient();
+
+    bool searchdoctor(QString filter);
+    bool deleteCurrentdoctor();
+    bool subitdoctorEdit();
+    void revertdoctorEdit();
+    int addNewdoctor();
 private:
     explicit IDatabase(QObject *parent = nullptr);
     IDatabase(IDatabase const &)               = delete;

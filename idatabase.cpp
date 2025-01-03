@@ -65,6 +65,43 @@ int IDatabase::addNewPatient()
     return curIndex.row();
 }
 
+bool IDatabase::searchdoctor(QString filter)
+{
+    doctorTabModel->setFilter(filter);
+    return doctorTabModel->select();
+}
+
+bool IDatabase::deleteCurrentdoctor()
+{
+    QModelIndex curIndex = thedoctorSelection->currentIndex();
+    doctorTabModel->removeRow(curIndex.row());
+    doctorTabModel->submitAll();
+    doctorTabModel->select();
+}
+
+bool IDatabase::subitdoctorEdit()
+{
+    return doctorTabModel->submitAll();
+}
+
+void IDatabase::revertdoctorEdit()
+{
+    return doctorTabModel->revertAll();
+}
+
+int IDatabase::addNewdoctor()
+{
+    doctorTabModel->insertRow(doctorTabModel->rowCount(),
+                              QModelIndex());
+    QModelIndex curIndex = doctorTabModel->index(doctorTabModel->rowCount() - 1, 1);
+
+    int curRecNo = curIndex.row();
+    QSqlRecord curRec = doctorTabModel->record(curRecNo);
+    curRec.setValue("ID", QUuid::createUuid().toString(QUuid::WithoutBraces));
+    doctorTabModel->setRecord(curRecNo, curRec);
+    return curIndex.row();
+}
+
 IDatabase::IDatabase(QObject *parent)
     : QObject{parent}
 {
@@ -93,5 +130,17 @@ bool IDatabase::initPatientModel()
     if (!(patientTabModel->select()))
         return false;
     thePatientSelection = new QItemSelectionModel(patientTabModel);
+    return true;
+}
+
+bool IDatabase::initdoctorModel()
+{
+    doctorTabModel = new QSqlTableModel(this, database);
+    doctorTabModel->setTable("doctor");
+    doctorTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    doctorTabModel->setSort(doctorTabModel->fieldIndex("name"), Qt::AscendingOrder);
+    if (!(doctorTabModel->select()))
+        return false;
+    thedoctorSelection = new QItemSelectionModel(doctorTabModel);
     return true;
 }

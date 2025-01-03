@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PatientEditView</class>
- <widget class="QWidget" name="PatientEditView">
-  <property name="windowModality">
-   <enum>Qt::WindowModality::ApplicationModal</enum>
-  </property>
+ <class>doctoreditview</class>
+ <widget class="QWidget" name="doctoreditview">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>553</width>
-    <height>539</height>
+    <width>533</width>
+    <height>540</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>添加</string>
+   <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -22,12 +19,9 @@
      <property name="orientation">
       <enum>Qt::Orientation::Horizontal</enum>
      </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Policy::Fixed</enum>
-     </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>137</width>
+       <width>111</width>
        <height>20</height>
       </size>
      </property>
@@ -48,31 +42,51 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>姓名：</string>
+        <string>员工号：</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="dbEditName"/>
+      <widget class="QLineEdit" name="dbEditemployeeno"/>
      </item>
      <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="label_10">
        <property name="text">
-        <string>身份证：</string>
+        <string>部门号：</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="dbEditIDCard"/>
+      <widget class="QLineEdit" name="dbEditDepartmentno"/>
      </item>
      <item row="3" column="0">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>执业证书号：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="dbEditcertificate"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>姓名：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="dbEditName"/>
+     </item>
+     <item row="5" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>性别：</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="5" column="1">
       <widget class="QComboBox" name="dbComboSex">
        <item>
         <property name="text">
@@ -86,55 +100,15 @@
        </item>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>出生日期：</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QDateEdit" name="dbdateEditDOB"/>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>身高：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QSpinBox" name="dbSpinHeight"/>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>体重：</string>
-       </property>
-      </widget>
-     </item>
      <item row="6" column="1">
-      <widget class="QSpinBox" name="dbSpinWeight"/>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>手机号：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="dbEditMoblie"/>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="label_9">
-       <property name="text">
-        <string>创建时间：</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QLineEdit" name="dbCreatedTimeStamp"/>
+      <widget class="QDateEdit" name="dbdateEditDOB"/>
      </item>
     </layout>
    </item>
@@ -154,14 +128,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnsave">
+      <widget class="QPushButton" name="btnsave_4">
        <property name="text">
         <string>保存</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btncancel">
+      <widget class="QPushButton" name="btncancel_4">
        <property name="text">
         <string>取消</string>
        </property>
@@ -176,7 +150,7 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>40</width>
+       <width>110</width>
        <height>20</height>
       </size>
      </property>
