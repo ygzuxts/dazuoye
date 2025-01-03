@@ -50,7 +50,7 @@
      <item>
       <widget class="QLineEdit" name="txtSearch">
        <property name="placeholderText">
-        <string>请输入姓名进行查找</string>
+        <string>请输入员工号进行查找</string>
        </property>
       </widget>
      </item>

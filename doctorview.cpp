@@ -23,6 +23,7 @@ DoctorView::DoctorView(QWidget *parent)
     if (iDatabase.initdoctorModel()) {
         ui->tableView->setModel(iDatabase.doctorTabModel);
         ui->tableView->setSelectionModel(iDatabase.thedoctorSelection);
+        iDatabase.doctorTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
     }
 }
 
@@ -77,36 +78,41 @@ void DoctorView::on_btImport_clicked()
     while (!in.atEnd()) {
         QString line = in.readLine();
         QStringList fields = line.split(",");
-        if (fields.size() < 4) continue; // 假设字段有 NAME, DEPARTMENT_ID, EMPLOYEE_NO, CERTIFICATE
+        if (fields.size() < 8) {
+            qDebug() << "Invalid line: Not enough fields -" << line;
+            continue; // 确保有足够的字段
+        }
 
         // 插入新行
-        int row = model->rowCount();  // 获取插入行的索引
+        int row = model->rowCount();
         model->insertRow(row);
 
-        // 设置该行记录的值
-        QSqlRecord record = model->record(row);
-        record.setValue("ID", QUuid::createUuid().toString(QUuid::WithoutBraces));  // 设置唯一 ID
-        record.setValue("NAME", fields[0].trimmed());
-        record.setValue("DEPARTMENT_ID", fields[1].trimmed());
-        record.setValue("EMPLOYEE_NO", fields[2].trimmed());
+        QSqlRecord record = model->record();
+        record.setValue("ID", fields[0].trimmed());                 // 保留原始 ID
+        record.setValue("EMPLOYEE_NO", fields[1].trimmed());
+        record.setValue("DEPARTMENT_ID", fields[2].trimmed());
         record.setValue("CERTIFICATE", fields[3].trimmed());
+        record.setValue("NAME", fields[4].trimmed());
+        record.setValue("SEX", fields[5].trimmed());
+        record.setValue("DOB", fields[6].trimmed());
+        record.setValue("LEVEL", fields[7].trimmed().toInt());      // 级别转换为整数
 
-        // 更新该行记录
-        model->setRecord(row, record);
-
-        // 提交每一行
-        if (!model->submit()) {
-            QMessageBox::warning(this, "错误", "导入数据提交失败: " + model->lastError().text());
-            file.close();
-            return;
+        if (!model->setRecord(row, record)) {
+            qDebug() << "SetRecord error:" << model->lastError().text();
         }
     }
 
+
+    // 提交所有更改
+    if (model->submitAll()) {
+        QMessageBox::information(this, "完成", "批量导入成功！");
+    } else {
+        qDebug() << "SubmitAll error:" << model->lastError().text();
+        QMessageBox::warning(this, "错误", "提交数据失败: " + model->lastError().text());
+    }
+
     file.close();
-    QMessageBox::information(this, "完成", "批量导入成功！");
 }
-
-
 
 void DoctorView::on_btExport_clicked()
 {
@@ -122,19 +128,30 @@ void DoctorView::on_btExport_clicked()
     QTextStream out(&file);
     QSqlTableModel *model = IDatabase::getInstance().doctorTabModel;
 
+    // 写入表数据
     for (int i = 0; i < model->rowCount(); ++i) {
         QSqlRecord record = model->record(i);
-        QString line = QString("%1,%2,%3,%4")
-                       .arg(record.value("NAME").toString())
-                       .arg(record.value("DEPARTMENT_ID").toString())
+        QString line = QString("%1,%2,%3,%4,%5,%6,%7,%8")
+                       .arg(record.value("ID").toString())
                        .arg(record.value("EMPLOYEE_NO").toString())
-                       .arg(record.value("CERTIFICATE").toString());
+                       .arg(record.value("DEPARTMENT_ID").toString())
+                       .arg(record.value("CERTIFICATE").toString())
+                       .arg(record.value("NAME").toString())
+                       .arg(record.value("SEX").toString())
+                       .arg(record.value("DOB").toString())
+                       .arg(record.value("LEVEL").toInt());
         out << line << "\n";
     }
 
     file.close();
     QMessageBox::information(this, "完成", "批量导出成功！");
 }
+
+
+
+
+
+
 
 
 
