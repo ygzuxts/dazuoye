@@ -40,6 +40,11 @@ bool IDatabase::deleteCurrentPatient()
     patientTabModel->select();
 }
 
+
+
+
+
+
 bool IDatabase::subitPatientEdit()
 {
     return patientTabModel->submitAll();
@@ -102,6 +107,82 @@ int IDatabase::addNewdoctor()
     return curIndex.row();
 }
 
+bool IDatabase::searchmedicine(QString filter)
+{
+    medicineTabModel->setFilter(filter);
+    return medicineTabModel->select();
+}
+
+bool IDatabase::deleteCurrentmedicine()
+{
+    QModelIndex curIndex = themedicineSelection->currentIndex();
+    medicineTabModel->removeRow(curIndex.row());
+    medicineTabModel->submitAll();
+    medicineTabModel->select();
+}
+
+bool IDatabase::subitrecordEdit()
+{
+    return recordTabModel->submitAll();
+}
+
+void IDatabase::revertrecordEdit()
+{
+    return recordTabModel->revertAll();
+}
+
+int IDatabase::addNewrecord()
+{
+    recordTabModel->insertRow(recordTabModel->rowCount(),
+                              QModelIndex());
+    QModelIndex curIndex = recordTabModel->index(recordTabModel->rowCount() - 1, 1);
+
+    int curRecNo = curIndex.row();
+    QSqlRecord curRec = recordTabModel->record(curRecNo);
+    curRec.setValue("ID", QUuid::createUuid().toString(QUuid::WithoutBraces));
+    recordTabModel->setRecord(curRecNo, curRec);
+    return curIndex.row();
+}
+
+bool IDatabase::searchrecord(QString filter)
+{
+    recordTabModel->setFilter(filter);
+    return recordTabModel->select();
+}
+
+bool IDatabase::deleteCurrentrecord()
+{
+    QModelIndex curIndex = therecordSelection->currentIndex();
+    recordTabModel->removeRow(curIndex.row());
+    recordTabModel->submitAll();
+    recordTabModel->select();
+}
+
+
+bool IDatabase::subitmedicineEdit()
+{
+    return medicineTabModel->submitAll();
+}
+
+void IDatabase::revertmedicineEdit()
+{
+    return medicineTabModel->revertAll();
+}
+
+int IDatabase::addNewmedicine()
+{
+    medicineTabModel->insertRow(medicineTabModel->rowCount(),
+                                QModelIndex());
+    QModelIndex curIndex = medicineTabModel->index(medicineTabModel->rowCount() - 1, 1);
+
+    int curRecNo = curIndex.row();
+    QSqlRecord curRec = medicineTabModel->record(curRecNo);
+    curRec.setValue("ID", QUuid::createUuid().toString(QUuid::WithoutBraces));
+
+    medicineTabModel->setRecord(curRecNo, curRec);
+    return curIndex.row();
+}
+
 IDatabase::IDatabase(QObject *parent)
     : QObject{parent}
 {
@@ -130,6 +211,120 @@ bool IDatabase::initPatientModel()
     if (!(patientTabModel->select()))
         return false;
     thePatientSelection = new QItemSelectionModel(patientTabModel);
+    currentPage = 0;
+    pageSize = 10; // 每页10条
+    return loadPatientPage();
+}
+bool IDatabase::loadPatientPage()
+{
+    QString filter = QString("ROWID >= %1 AND ROWID < %2")
+                     .arg(currentPage * pageSize + 1)
+                     .arg((currentPage + 1) * pageSize + 1);
+
+    patientTabModel->setFilter(filter);
+
+    if (!patientTabModel->select()) {
+        qDebug() << "Failed to load patient page:" << patientTabModel->lastError().text();
+        return false;
+    }
+
+    // 更新总记录数和总页数
+    QSqlQuery query(database);
+    if (query.exec("SELECT COUNT(*) FROM patient") && query.next()) {
+        totalRecords = query.value(0).toInt();
+        totalPages = (totalRecords + pageSize - 1) / pageSize; // 向上取整
+    }
+
+    emit pageInfoUpdated(currentPage + 1, totalPages); // 发射信号更新 UI
+    return true;
+}
+
+bool IDatabase::initrecordModel()
+{
+    recordTabModel = new QSqlTableModel(this, database);
+    recordTabModel->setTable("record");
+    recordTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    recordTabModel->setSort(recordTabModel->fieldIndex("id"), Qt::AscendingOrder);
+    if (!(recordTabModel->select()))
+        return false;
+    therecordSelection = new QItemSelectionModel(recordTabModel);
+    currentPage = 0;
+    pageSize = 10; // 每页10条
+    return loadrecordPage();
+}
+bool IDatabase::loadrecordPage()
+{
+    QString filter = QString("ROWID >= %1 AND ROWID < %2")
+                     .arg(currentPage * pageSize + 1)
+                     .arg((currentPage + 1) * pageSize + 1);
+
+    recordTabModel->setFilter(filter);
+
+    if (!recordTabModel->select()) {
+        qDebug() << "Failed to load patient page:" << recordTabModel->lastError().text();
+        return false;
+    }
+
+    // 更新总记录数和总页数
+    QSqlQuery query(database);
+    if (query.exec("SELECT COUNT(*) FROM record") && query.next()) {
+        totalRecords = query.value(0).toInt();
+        totalPages = (totalRecords + pageSize - 1) / pageSize; // 向上取整
+    }
+
+    emit pageInfoUpdated(currentPage + 1, totalPages); // 发射信号更新 UI
+    return true;
+}
+
+
+
+
+bool IDatabase::loaddoctorPage()
+{
+    QString filter = QString("ROWID >= %1 AND ROWID < %2")
+                     .arg(currentPage * pageSize + 1)
+                     .arg((currentPage + 1) * pageSize + 1);
+
+    doctorTabModel->setFilter(filter);
+
+    if (!doctorTabModel->select()) {
+        qDebug() << "Failed to load patient page:" << doctorTabModel->lastError().text();
+        return false;
+    }
+
+    // 更新总记录数和总页数
+    QSqlQuery query(database);
+    query.exec("SELECT COUNT(*) FROM doctor");
+    if (query.next()) {
+        totalRecords = query.value(0).toInt();
+        totalPages = (totalRecords + pageSize - 1) / pageSize; // 向上取整
+    }
+
+    emit pageInfoUpdated(currentPage + 1, totalPages);
+    return true;
+}
+
+bool IDatabase::loadmedicinePage()
+{
+    QString filter = QString("ROWID >= %1 AND ROWID < %2")
+                     .arg(currentPage * pageSize + 1)
+                     .arg((currentPage + 1) * pageSize + 1);
+    medicineTabModel->setFilter(filter);
+
+    if (!medicineTabModel->select()) {
+        qDebug() << "Failed to load patient page:" << medicineTabModel->lastError().text();
+        return false;
+    }
+
+    // 更新总记录数和总页数
+    QSqlQuery query(database);
+    query.exec("SELECT COUNT(*) FROM medicine");
+    if (query.next()) {
+        totalRecords = query.value(0).toInt();
+        totalPages = (totalRecords + pageSize - 1) / pageSize; // 向上取整
+    }
+
+    emit pageInfoUpdated(currentPage + 1, totalPages);
     return true;
 }
 
@@ -142,5 +337,132 @@ bool IDatabase::initdoctorModel()
     if (!(doctorTabModel->select()))
         return false;
     thedoctorSelection = new QItemSelectionModel(doctorTabModel);
-    return true;
+    currentPage = 0;
+    pageSize = 10; // 每页10条
+    return loaddoctorPage();
+}
+
+bool IDatabase::initmedicineModel()
+{
+    // 创建并初始化 QSqlTableModel
+    medicineTabModel = new QSqlTableModel(this, database);
+    medicineTabModel->setTable("medicine");
+    medicineTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    medicineTabModel->setSort(medicineTabModel->fieldIndex("name"), Qt::AscendingOrder);
+
+    // 检查数据表是否成功加载
+    if (!medicineTabModel->select())
+        return false;
+
+    // 创建选择模型
+    themedicineSelection = new QItemSelectionModel(medicineTabModel);
+
+    // 检查库存
+    checkInventory();
+
+    // 初始化分页
+    currentPage = 0;
+    pageSize = 10; // 每页10条
+
+    return loadmedicinePage();
+}
+
+bool IDatabase::nextPage()
+{
+    if (currentPage + 1 >= totalPages) {
+        return false; // 当前页已是最后一页
+    }
+
+    ++currentPage;
+    return loadPatientPage();
+}
+
+bool IDatabase::previousPage()
+{
+    if (currentPage > 0) {
+        currentPage--;
+        return loadPatientPage();
+    }
+    return false;
+}
+bool IDatabase::nextPage1()
+{
+    if (currentPage + 1 >= totalPages) {
+        return false; // 当前页已是最后一页
+    }
+
+    ++currentPage;
+    return loaddoctorPage();
+}
+
+bool IDatabase::previousPage2()
+{
+    if (currentPage > 0) {
+        currentPage--;
+        return loadmedicinePage();
+    }
+    return false;
+}
+
+bool IDatabase::nextPage2()
+{
+    if (currentPage + 1 >= totalPages) {
+        return false; // 当前页已是最后一页
+    }
+
+    ++currentPage;
+    return loadmedicinePage();
+}
+
+bool IDatabase::previousPage3()
+{
+    if (currentPage > 0) {
+        currentPage--;
+        return loadrecordPage();
+    }
+    return false;
+}
+
+bool IDatabase::nextPage3()
+{
+    if (currentPage + 1 >= totalPages) {
+        return false; // 当前页已是最后一页
+    }
+
+    ++currentPage;
+    return loadrecordPage();
+}
+
+void IDatabase::checkInventory()
+{
+    QList<QString> lowInventoryItems;
+
+    for (int row = 0; row < medicineTabModel->rowCount(); ++row) {
+        QModelIndex index = medicineTabModel->index(row, medicineTabModel->fieldIndex("inventory"));
+        int inventory = medicineTabModel->data(index).toInt();
+
+        if (inventory < 10) { // 库存不足
+            QModelIndex nameIndex = medicineTabModel->index(row, medicineTabModel->fieldIndex("name"));
+            QString medicineName = medicineTabModel->data(nameIndex).toString();
+            lowInventoryItems.append(medicineName);
+        }
+    }
+
+    if (!lowInventoryItems.isEmpty()) {
+        qDebug() << "Low inventory items:" << lowInventoryItems; // 调试输出
+        emit inventoryWarning(lowInventoryItems);
+    } else {
+        qDebug() << "All inventory levels are sufficient.";
+    }
+}
+
+
+
+bool IDatabase::previousPage1()
+{
+    if (currentPage > 0) {
+        currentPage--;
+        return loaddoctorPage();
+    }
+    return false;
 }

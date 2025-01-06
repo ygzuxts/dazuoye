@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PatientView</class>
- <widget class="QWidget" name="PatientView">
+ <class>ReCord</class>
+ <widget class="QWidget" name="ReCord">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>665</width>
-    <height>520</height>
+    <width>603</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>患者管理</string>
+   <string>记录</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -50,7 +50,7 @@
      <item>
       <widget class="QLineEdit" name="txtSearch">
        <property name="placeholderText">
-        <string>请输入姓名进行查找</string>
+        <string/>
        </property>
       </widget>
      </item>

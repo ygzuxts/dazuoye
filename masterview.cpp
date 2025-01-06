@@ -1,6 +1,8 @@
 #include "masterview.h"
 #include "ui_masterview.h"
 #include<Qdebug>
+#include <QMessageBox>
+
 #include"idatabase.h"
 MasterView::MasterView(QWidget *parent)
     : QWidget(parent)
@@ -12,6 +14,7 @@ MasterView::MasterView(QWidget *parent)
     goLoginView();
 
     IDatabase::getInstance();
+
 }
 
 MasterView::~MasterView()
@@ -33,8 +36,9 @@ void MasterView::goWelcomView()
     welcomeView = new WelcomeView(this);
     pushWidgetToStackView(welcomeView);
     connect(welcomeView, SIGNAL(Doctor()), this, SLOT(goDoctorView()));
-    connect(welcomeView, SIGNAL(Department()), this, SLOT(goDepartmentView()));
+    connect(welcomeView, SIGNAL(medicine()), this, SLOT(gomedicineView()));
     connect(welcomeView, SIGNAL(Patient()), this, SLOT(goPatientView()));
+    connect(welcomeView, SIGNAL(Record()), this, SLOT(gorecord()));
 }
 
 void MasterView::goDoctorView()
@@ -45,13 +49,35 @@ void MasterView::goDoctorView()
     connect(doctorView, SIGNAL(godoctorEditView(int)), this, SLOT(godoctorEditView(int)));
 }
 
-void MasterView::goDepartmentView()
+void MasterView::gomedicineView()
 {
-    qDebug() << "goDepartmentView";
-    departmentView = new DepartmentView(this);
-    pushWidgetToStackView(departmentView);
+    qDebug() << "gomedicineView";
+    m_medicineView = new MedicineView(this);
+    pushWidgetToStackView(m_medicineView);
+    connect(m_medicineView, SIGNAL(gomedicineEditView(int)), this, SLOT(gomedicineEditView(int)));
+}
+void MasterView::gomedicineEditView(int rowNo)
+{
+    qDebug() << "gomedicineEditView";
+    Medicineeditview = new medicineeditview(this, rowNo);
+    pushWidgetToStackView(Medicineeditview);
+    connect(Medicineeditview, SIGNAL(goPerviousView()), this, SLOT(goPreviousView()));
 }
 
+void MasterView::gorecord()
+{
+    qDebug() << "gorecord";
+    record = new ReCord(this);
+    pushWidgetToStackView(record);
+    connect(record, SIGNAL(gorecordEditView(int)), this, SLOT(gorecordEditView(int)));
+}
+void MasterView::gorecordEditView(int rowNo)
+{
+    qDebug() << "gorecordEditView";
+    recordeditview = new Recordeditview(this, rowNo);
+    pushWidgetToStackView(recordeditview);
+    connect(recordeditview, SIGNAL(goPerviousView()), this, SLOT(goPreviousView()));
+}
 void MasterView::goPatientView()
 {
     qDebug() << "goPatientView";

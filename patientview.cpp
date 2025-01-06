@@ -9,6 +9,7 @@
 PatientView::PatientView(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::PatientView)
+
 {
     ui->setupUi(this);
 
@@ -23,12 +24,14 @@ PatientView::PatientView(QWidget *parent)
         ui->tableView->setModel(iDatabase.patientTabModel);
         ui->tableView->setSelectionModel(iDatabase.thePatientSelection);
     }
+    connect(&iDatabase, &IDatabase::pageInfoUpdated, this, &PatientView::updatePageInfo);
 }
 
 PatientView::~PatientView()
 {
     delete ui;
 }
+
 
 void PatientView::on_btSearch_clicked()
 {
@@ -149,3 +152,26 @@ void PatientView::on_btExport_clicked()
 }
 
 
+
+void PatientView::on_btnPrevious_clicked()
+{
+    if (IDatabase::getInstance().previousPage()) {
+        ui->btnPrevious->setEnabled(IDatabase::getInstance().currentPage > 0);
+        ui->btnNext->setEnabled(IDatabase::getInstance().currentPage < IDatabase::getInstance().totalPages - 1);
+    }
+}
+
+void PatientView::on_btnNext_clicked()
+{
+    if (IDatabase::getInstance().nextPage()) {
+        ui->btnPrevious->setEnabled(IDatabase::getInstance().currentPage > 0);
+        ui->btnNext->setEnabled(IDatabase::getInstance().currentPage < IDatabase::getInstance().totalPages - 1);
+    }
+}
+
+void PatientView::updatePageInfo(int currentPage, int totalPages)
+{
+    ui->lblPageInfo->setText(QString("当前页: %1 / 总页数: %2").arg(currentPage).arg(totalPages));
+    ui->btnPrevious->setEnabled(currentPage > 1); // 当前页大于第一页时启用“上一页”
+    ui->btnNext->setEnabled(currentPage < totalPages); // 当前页小于总页数时启用“下一页”
+}

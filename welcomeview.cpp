@@ -34,3 +34,15 @@ void WelcomeView::on_btPatient_clicked()
     emit Patient();
 }
 
+
+void WelcomeView::on_btMedicine_clicked()
+{
+    emit medicine();
+}
+
+
+void WelcomeView::on_btRecord_clicked()
+{
+    emit Record();
+}
+

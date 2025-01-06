@@ -1,5 +1,5 @@
-#include "doctorview.h"
-#include "ui_doctorview.h"
+#include "record.h"
+#include "ui_record.h"
 #include"idatabase.h"
 #include <QFileDialog>   // 用于文件选择对话框
 #include <QMessageBox>   // 用于消息框
@@ -7,12 +7,11 @@
 #include <QSqlRecord>    // 用于操作数据库记录
 #include <QUuid>         // 用于生成唯一标识符
 
-DoctorView::DoctorView(QWidget *parent)
+ReCord::ReCord(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::DoctorView)
+    , ui(new Ui::ReCord)
 {
     ui->setupUi(this);
-
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);       // 设置为按行选择
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);      // 设置为单选模式
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);        // 禁止编辑
@@ -20,49 +19,48 @@ DoctorView::DoctorView(QWidget *parent)
 
 
     IDatabase &iDatabase = IDatabase::getInstance();
-    connect(&iDatabase, &IDatabase::pageInfoUpdated, this, &DoctorView::updatePageInfo);
-    if (iDatabase.initdoctorModel()) {
-        ui->tableView->setModel(iDatabase.doctorTabModel);
-        ui->tableView->setSelectionModel(iDatabase.thedoctorSelection);
-        iDatabase.doctorTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    connect(&iDatabase, &IDatabase::pageInfoUpdated, this, &ReCord::updatePageInfo);
+    if (iDatabase.initrecordModel()) {
+        ui->tableView->setModel(iDatabase.recordTabModel);
+        ui->tableView->setSelectionModel(iDatabase.therecordSelection);
+        iDatabase.recordTabModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
     }
-
 }
 
-DoctorView::~DoctorView()
+ReCord::~ReCord()
 {
     delete ui;
 }
 
-void DoctorView::on_btSearch_clicked()
+void ReCord::on_btSearch_clicked()
 {
-    QString filter = QString("EMPLOYEE_NO like '%1%'").arg(ui->txtSearch->text());
-    IDatabase::getInstance().searchdoctor(filter);
+    QString filter = QString("ID like '%1%'").arg(ui->txtSearch->text());
+    IDatabase::getInstance().searchrecord(filter);
 }
 
 
-void DoctorView::on_btAdd_clicked()
+void ReCord::on_btAdd_clicked()
 {
-    int currow = IDatabase::getInstance().addNewdoctor();
-    emit godoctorEditView(currow);
+    int currow = IDatabase::getInstance().addNewrecord();
+    emit gorecordEditView(currow);
 }
 
 
-void DoctorView::on_btDelet_clicked()
+void ReCord::on_btDelet_clicked()
 {
-    IDatabase::getInstance().deleteCurrentdoctor();
+    IDatabase::getInstance().deleteCurrentrecord();
 }
 
 
-void DoctorView::on_btEdit_clicked()
+void ReCord::on_btEdit_clicked()
 {
     QModelIndex curIndex =
-        IDatabase::getInstance().thedoctorSelection->currentIndex();
-    emit godoctorEditView(curIndex.row());
+        IDatabase::getInstance().therecordSelection->currentIndex();
+    emit gorecordEditView(curIndex.row());
 }
 
 
-void DoctorView::on_btImport_clicked()
+void ReCord::on_btImport_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "选择批量导入文件", "", "CSV 文件 (*.csv)");
     if (fileName.isEmpty()) return;
@@ -75,12 +73,12 @@ void DoctorView::on_btImport_clicked()
 
     QTextStream in(&file);
     IDatabase &iDatabase = IDatabase::getInstance();
-    QSqlTableModel *model = iDatabase.doctorTabModel;
+    QSqlTableModel *model = iDatabase.recordTabModel;
 
     while (!in.atEnd()) {
         QString line = in.readLine();
         QStringList fields = line.split(",");
-        if (fields.size() < 8) {
+        if (fields.size() < 6) {
             qDebug() << "Invalid line: Not enough fields -" << line;
             continue; // 确保有足够的字段
         }
@@ -91,13 +89,12 @@ void DoctorView::on_btImport_clicked()
 
         QSqlRecord record = model->record();
         record.setValue("ID", fields[0].trimmed());                 // 保留原始 ID
-        record.setValue("EMPLOYEE_NO", fields[1].trimmed());
-        record.setValue("DEPARTMENT_ID", fields[2].trimmed());
-        record.setValue("CERTIFICATE", fields[3].trimmed());
-        record.setValue("NAME", fields[4].trimmed());
-        record.setValue("SEX", fields[5].trimmed());
-        record.setValue("DOB", fields[6].trimmed());
-        record.setValue("LEVEL", fields[7].trimmed().toInt());      // 级别转换为整数
+        record.setValue("PATIENTNAME", fields[1].trimmed());
+        record.setValue("DOCTORNAME", fields[2].trimmed());
+        record.setValue("RESULT", fields[3].trimmed());
+        record.setValue("MEDICINE", fields[4].trimmed());
+        record.setValue("DATE", fields[5].trimmed());
+        // 级别转换为整数
 
         if (!model->setRecord(row, record)) {
             qDebug() << "SetRecord error:" << model->lastError().text();
@@ -116,7 +113,8 @@ void DoctorView::on_btImport_clicked()
     file.close();
 }
 
-void DoctorView::on_btExport_clicked()
+
+void ReCord::on_btExport_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "选择保存路径", "", "CSV 文件 (*.csv)");
     if (fileName.isEmpty()) return;
@@ -133,15 +131,14 @@ void DoctorView::on_btExport_clicked()
     // 写入表数据
     for (int i = 0; i < model->rowCount(); ++i) {
         QSqlRecord record = model->record(i);
-        QString line = QString("%1,%2,%3,%4,%5,%6,%7,%8")
+        QString line = QString("%1,%2,%3,%4,%5,%6")
                        .arg(record.value("ID").toString())
-                       .arg(record.value("EMPLOYEE_NO").toString())
-                       .arg(record.value("DEPARTMENT_ID").toString())
-                       .arg(record.value("CERTIFICATE").toString())
-                       .arg(record.value("NAME").toString())
-                       .arg(record.value("SEX").toString())
-                       .arg(record.value("DOB").toString())
-                       .arg(record.value("LEVEL").toInt());
+                       .arg(record.value("PATIENTNAME").toString())
+                       .arg(record.value("DOCTORNAME").toString())
+                       .arg(record.value("RESULT").toString())
+                       .arg(record.value("MEDICINE").toString())
+                       .arg(record.value("DATE").toString());
+
         out << line << "\n";
     }
 
@@ -150,28 +147,25 @@ void DoctorView::on_btExport_clicked()
 }
 
 
-
-
-
-
-
-void DoctorView::on_btnPrevious_clicked()
+void ReCord::on_btnPrevious_clicked()
 {
-    if (!IDatabase::getInstance().previousPage1()) {
+    if (!IDatabase::getInstance().previousPage3()) {
         ui->btnPrevious->setEnabled(false);
     }
     ui->btnPrevious->setEnabled(true);
 }
 
 
-void DoctorView::on_btnNext_clicked()
+void ReCord::on_btnNext_clicked()
 {
-    if (!IDatabase::getInstance().nextPage1()) {
+    if (!IDatabase::getInstance().nextPage3()) {
         ui->btnNext->setEnabled(false);
     }
     ui->btnNext->setEnabled(true);
 }
-void DoctorView::updatePageInfo(int currentPage, int totalPages)
+
+void ReCord::updatePageInfo(int currentPage, int totalPages)
 {
     ui->lblPageInfo->setText(QString("当前页: %1 / 总页数: %2").arg(currentPage).arg(totalPages));
 }
+

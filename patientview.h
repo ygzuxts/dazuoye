@@ -27,9 +27,14 @@ private slots:
 
     void on_btExport_clicked();
 
+    void on_btnPrevious_clicked();
+
+    void on_btnNext_clicked();
+    void updatePageInfo(int currentPage, int totalPages);
 signals:
     void goPatientEditView(int idx);
 private:
+
     Ui::PatientView *ui;
 };
 

@@ -4,12 +4,14 @@
 #include <QWidget>
 #include"loginview.h"
 #include"doctorview.h"
-#include"departmentview.h"
 #include"patienteditview.h"
 #include"patientview.h"
 #include"welcomeview.h"
 #include"doctoreditview.h"
-
+#include"medicineview.h"
+#include"medicineeditview.h"
+#include"record.h"
+#include"recordeditview.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MasterView;
@@ -28,12 +30,14 @@ public slots:
     void goLoginView();
     void goWelcomView();
     void goDoctorView();
-    void goDepartmentView();
+    void gomedicineView();
     void goPatientView();
     void goPatientEditView(int rowNo);
     void godoctorEditView(int rowNo);
     void goPreviousView();
-
+    void gomedicineEditView(int rowNo);
+    void gorecord();
+    void gorecordEditView(int rowNo);
 private slots:
     void on_btBack_clicked();
 
@@ -48,10 +52,13 @@ private:
     WelcomeView *welcomeView;
     DoctorView *doctorView;
     PatientView *patientView;
-    DepartmentView *departmentView;
+    MedicineView *m_medicineView;
     LoginView *loginView;
     PatientEditView  *patientEditView;
     doctoreditview *m_doctoreditview;
+    medicineeditview *Medicineeditview;
+    ReCord *record;
+    Recordeditview *recordeditview;
 
 };
 #endif // MASTERVIEW_H
