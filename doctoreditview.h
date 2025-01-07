@@ -23,6 +23,7 @@ private slots:
 private:
     Ui::doctoreditview *ui;
     QDataWidgetMapper *dataMapper;
+    QString employeeNo;
 signals:
     void goPerviousView();
 };

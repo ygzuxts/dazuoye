@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     doctoreditview.cpp \
     doctorview.cpp \
+    editpassword.cpp \
     idatabase.cpp \
     loginview.cpp \
     main.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 HEADERS += \
     doctoreditview.h \
     doctorview.h \
+    editpassword.h \
     idatabase.h \
     loginview.h \
     masterview.h \
@@ -40,6 +42,7 @@ HEADERS += \
 FORMS += \
     doctoreditview.ui \
     doctorview.ui \
+    editpassword.ui \
     loginview.ui \
     masterview.ui \
     medicineeditview.ui \

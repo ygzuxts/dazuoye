@@ -14,7 +14,7 @@ class WelcomeView : public QWidget
 public:
     explicit WelcomeView(QWidget *parent = nullptr);
     ~WelcomeView();
-
+    void setUserLevel(int level);
 private slots:
     void on_btDoctor_clicked();
 

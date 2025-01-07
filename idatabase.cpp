@@ -3,27 +3,34 @@
 #include<QUuid>
 QString IDatabase::userLogin(QString userName, QString password)
 {
-    // return"Login ok";
     QSqlQuery query;
-    query.prepare("select username,password from user where username =:USER");
-    query.bindValue(":USER", userName);
+
+    // 查询密码和权限
+    query.prepare(R"(
+    SELECT user.PASSWORD, Doctor.LEVEL
+    FROM user
+    LEFT JOIN Doctor ON user.EPID = Doctor.EMPLOYEE_NO
+    WHERE user.EPID = :account OR Doctor.PHONENUMBER = :account
+)");
+    query.bindValue(":account", userName); // `userName` 可能是 EPID 或 PHONENUMBER
     query.exec();
-    if (query.first() && query.value("username").isValid()) {
-        QString passwd = query.value("password").toString();
+
+    if (query.first() && query.value("PASSWORD").isValid()) {
+        QString passwd = query.value("PASSWORD").toString();
         if (passwd == password) {
-            return"Login ok";
+            lastLoginLevel = query.value("LEVEL").toInt();
+            return "Login ok";
         } else {
-            qDebug() << "wrong Password";
-            return "wrong Password";
+            qDebug() << "Wrong password";
+            return "Wrong Password";
         }
     } else {
-        qDebug() << "no such user";
-        return"wrong Username";
-
+        qDebug() << "No such user";
+        return "Wrong Username";
     }
-    query.first();
 
-    return"failed";
+    // 如果到达这里，表示登录失败
+    return "Failed";
 }
 
 bool IDatabase::searchPatient(QString filter)

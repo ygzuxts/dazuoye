@@ -81,6 +81,10 @@ public:
     int totalRecords = 0;
     int totalPages = 0;
     void checkInventory();
+    int getLastLoginLevel() const
+    {
+        return lastLoginLevel;
+    }
 private:
     explicit IDatabase(QObject *parent = nullptr);
     IDatabase(IDatabase const &)               = delete;
@@ -88,10 +92,11 @@ private:
 
     QSqlDatabase database;
     void ininDatabase();
-
+    int lastLoginLevel;
 
 
 signals:
+
     void pageInfoUpdated(int currentPage, int totalPages);
     void inventoryWarning(const QList<QString> &lowInventoryItems);
 };

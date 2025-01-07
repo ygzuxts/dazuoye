@@ -80,7 +80,7 @@ void DoctorView::on_btImport_clicked()
     while (!in.atEnd()) {
         QString line = in.readLine();
         QStringList fields = line.split(",");
-        if (fields.size() < 8) {
+        if (fields.size() < 9) {
             qDebug() << "Invalid line: Not enough fields -" << line;
             continue; // 确保有足够的字段
         }
@@ -97,7 +97,8 @@ void DoctorView::on_btImport_clicked()
         record.setValue("NAME", fields[4].trimmed());
         record.setValue("SEX", fields[5].trimmed());
         record.setValue("DOB", fields[6].trimmed());
-        record.setValue("LEVEL", fields[7].trimmed().toInt());      // 级别转换为整数
+        record.setValue("PHONENUMBER", fields[7].trimmed());
+        record.setValue("LEVEL", fields[8].trimmed().toInt());      // 级别转换为整数
 
         if (!model->setRecord(row, record)) {
             qDebug() << "SetRecord error:" << model->lastError().text();
@@ -133,7 +134,7 @@ void DoctorView::on_btExport_clicked()
     // 写入表数据
     for (int i = 0; i < model->rowCount(); ++i) {
         QSqlRecord record = model->record(i);
-        QString line = QString("%1,%2,%3,%4,%5,%6,%7,%8")
+        QString line = QString("%1,%2,%3,%4,%5,%6,%7,%8,%9")
                        .arg(record.value("ID").toString())
                        .arg(record.value("EMPLOYEE_NO").toString())
                        .arg(record.value("DEPARTMENT_ID").toString())
@@ -141,6 +142,7 @@ void DoctorView::on_btExport_clicked()
                        .arg(record.value("NAME").toString())
                        .arg(record.value("SEX").toString())
                        .arg(record.value("DOB").toString())
+                       .arg(record.value("PHONENUMBER").toString())
                        .arg(record.value("LEVEL").toInt());
         out << line << "\n";
     }

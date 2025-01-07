@@ -130,16 +130,16 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPushButton" name="btSignUp">
+        <widget class="QPushButton" name="btSignin">
          <property name="text">
-          <string>注册</string>
+          <string>登录</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btSignin">
+        <widget class="QPushButton" name="btEdit">
          <property name="text">
-          <string>登录</string>
+          <string>修改密码</string>
          </property>
         </widget>
        </item>

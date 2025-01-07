@@ -27,13 +27,23 @@ void MasterView::goLoginView()
     qDebug() << "gologinview";
     loginView = new LoginView(this);
     pushWidgetToStackView(loginView);
-    connect(loginView, SIGNAL(loginSuccess()), this, SLOT(goWelcomView()));
+    connect(loginView, &LoginView::loginSuccess, this, [this](int level) {
+        goWelcomView(level); // 跳转到 WelcomeView，并传递权限等级
+    });
+    connect(loginView, SIGNAL(goeditpassword()), this, SLOT(goeditpassword()));
 }
-
-void MasterView::goWelcomView()
+void MasterView::goeditpassword()
+{
+    qDebug() << "goeditpassword";
+    Editpassword = new editpassword(this);
+    pushWidgetToStackView(Editpassword);
+    connect(Editpassword, SIGNAL(goPerviousView()), this, SLOT(goPreviousView()));
+}
+void MasterView::goWelcomView(int level)
 {
     qDebug() << "goWelcomView";
     welcomeView = new WelcomeView(this);
+    welcomeView->setUserLevel(level);
     pushWidgetToStackView(welcomeView);
     connect(welcomeView, SIGNAL(Doctor()), this, SLOT(goDoctorView()));
     connect(welcomeView, SIGNAL(medicine()), this, SLOT(gomedicineView()));
@@ -78,6 +88,8 @@ void MasterView::gorecordEditView(int rowNo)
     pushWidgetToStackView(recordeditview);
     connect(recordeditview, SIGNAL(goPerviousView()), this, SLOT(goPreviousView()));
 }
+
+
 void MasterView::goPatientView()
 {
     qDebug() << "goPatientView";
