@@ -1,7 +1,7 @@
 #include "masterview.h"
 #include "ui_masterview.h"
 #include<Qdebug>
-#include <QMessageBox>
+
 
 #include"idatabase.h"
 MasterView::MasterView(QWidget *parent)
@@ -21,7 +21,6 @@ MasterView::~MasterView()
 {
     delete ui;
 }
-
 void MasterView::goLoginView()
 {
     qDebug() << "gologinview";

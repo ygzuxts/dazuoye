@@ -1,6 +1,7 @@
 #include "idatabase.h"
 #include<QDebug>
 #include<QUuid>
+#include<QMessageBox>
 QString IDatabase::userLogin(QString userName, QString password)
 {
     QSqlQuery query;
@@ -11,7 +12,7 @@ QString IDatabase::userLogin(QString userName, QString password)
     FROM user
     LEFT JOIN Doctor ON user.EPID = Doctor.EMPLOYEE_NO
     WHERE user.EPID = :account OR Doctor.PHONENUMBER = :account
-)");
+    )");
     query.bindValue(":account", userName); // `userName` 可能是 EPID 或 PHONENUMBER
     query.exec();
 
@@ -19,19 +20,55 @@ QString IDatabase::userLogin(QString userName, QString password)
         QString passwd = query.value("PASSWORD").toString();
         if (passwd == password) {
             lastLoginLevel = query.value("LEVEL").toInt();
+
+            // 显示登录成功的消息
+            QMessageBox msgBox;
+            msgBox.setStyleSheet("QLabel { font-size: 20px; color: white; } QPushButton { font-size: 12px; }");
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.setWindowTitle("登录成功");
+            msgBox.setText("登录成功！");
+            msgBox.exec();
+
             return "Login ok";
         } else {
             qDebug() << "Wrong password";
+
+            // 显示密码错误的消息
+            QMessageBox msgBox;
+            msgBox.setStyleSheet("QLabel { font-size: 20px; color: white; } QPushButton { font-size: 12px; }");
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setWindowTitle("登录失败");
+            msgBox.setText("密码错误，请重试！");
+            msgBox.exec();
+
             return "Wrong Password";
         }
     } else {
         qDebug() << "No such user";
+
+        // 显示用户不存在的消息
+        QMessageBox msgBox;
+        msgBox.setStyleSheet("QLabel { font-size: 20px; color: white; } QPushButton { font-size: 12px; }");
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setWindowTitle("登录失败");
+        msgBox.setText("用户不存在，请检查账号！");
+        msgBox.exec();
+
         return "Wrong Username";
     }
 
     // 如果到达这里，表示登录失败
+    QMessageBox msgBox;
+    msgBox.setStyleSheet("QLabel { font-size: 20px; color: white; } QPushButton { font-size: 12px; }");
+    msgBox.setIcon(QMessageBox::Critical);
+    msgBox.setWindowTitle("登录失败");
+    msgBox.setText("登录失败，请重试！");
+    msgBox.exec();
+
     return "Failed";
 }
+
+
 
 bool IDatabase::searchPatient(QString filter)
 {

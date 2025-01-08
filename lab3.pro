@@ -60,3 +60,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     lab3.qrc
+
+DISTFILES += \
+    image/R2.png

@@ -16,6 +16,12 @@
   <property name="windowTitle">
    <string>添加</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel {
+color:white;
+    font: bold 20px &quot;Arial&quot;;
+}</string>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <spacer name="horizontalSpacer">

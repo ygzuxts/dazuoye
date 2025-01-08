@@ -76,7 +76,8 @@ void doctoreditview::on_btnsave_4_clicked()
         // 返回到上一个视图
         emit goPerviousView();
     } else {
-        QMessageBox::warning(this, "外键约束", "员工号和电话号码不可重复");
+        QMessageBox::warning(this, "外键约束",
+                             "<font size='10px' color='white'>员工号和电话号码不可重复</font>");
     }
 }
 

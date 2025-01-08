@@ -13,6 +13,7 @@
 #include"record.h"
 #include"recordeditview.h"
 #include"editpassword.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MasterView;
@@ -50,6 +51,7 @@ private slots:
 
 private:
     void pushWidgetToStackView(QWidget *widget);
+
     Ui::MasterView *ui;
 
     WelcomeView *welcomeView;

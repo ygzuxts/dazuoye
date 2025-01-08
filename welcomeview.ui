@@ -13,6 +13,24 @@
   <property name="windowTitle">
    <string>欢迎</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">
+/* QPushButton 按钮样式 */
+QPushButton {
+
+    color: black; /* 按钮文字颜色 */
+    border: none;
+    border-radius: 5px; /* 按钮圆角 */
+    padding: 8px 15px;
+    font: bold 12px &quot;Arial&quot;;
+    text-align: center;
+}
+
+QMessageBox {
+                         color: #8B0000;
+                          font: 12pt 'Arial';
+                         }</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <spacer name="verticalSpacer">

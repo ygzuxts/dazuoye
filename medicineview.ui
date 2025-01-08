@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>medicine</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QMessageBox {
+                         color: #8B0000;
+                          font: 12pt 'Arial';
+                         }</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">

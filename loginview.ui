@@ -6,12 +6,55 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>375</width>
-    <height>222</height>
+    <width>335</width>
+    <height>215</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>登录</string>
+   <string>登陆</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* 设置整体背景颜色 */
+QWidget#LoginView {
+
+    border-radius: 10px;
+}
+QLabel#labeltitle {
+    font-size: 30px; /* 设置字体大小 */
+    font-weight: bold; /* 可选：加粗字体 */
+
+    color:black;}
+/* QLabel 标题样式 */
+QLabel {
+    color:white;
+    font: bold 20px &quot;Arial&quot;;
+}
+
+/* QLineEdit 输入框透明效果 */
+
+
+/* 按钮悬停时的颜色 */
+QPushButton:hover {
+    background-color: #a0a0a0; /* 深灰色背景 */
+    color: #ffffff; /* 保持白色文字 */
+}
+
+/* 按钮按下时的颜色 */
+QPushButton:pressed {
+    background-color: #7f7f7f; /* 中灰色背景 */
+    color: #ffffff; /* 保持白色文字 */
+}
+
+QPushButton {
+    background-color: #e0e0e0; /* 浅灰色背景 */
+  color: black; /* 按钮文字颜色 */
+    padding: 10px 20px;
+    border: none; /* 去掉默认边框 */
+    border-radius: 5px;
+}
+QLineEdit#inputUserName[text=&quot;&quot;]{color:white;}
+
+</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -28,7 +71,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="labeltitle">
      <property name="text">
       <string>欢迎使用医疗诊断系统</string>
      </property>

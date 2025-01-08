@@ -9,5 +9,7 @@
         <file>image/edit.png</file>
         <file>image/new.png</file>
         <file>image/search.png</file>
+        <file>image/R1.jpg</file>
+        <file>image/R21.png</file>
     </qresource>
 </RCC>

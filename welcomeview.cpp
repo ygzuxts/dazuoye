@@ -3,7 +3,7 @@
 #include<QDebug>
 #include"idatabase.h"
 #include <QFileDialog>   // 用于文件选择对话框
-#include <QMessageBox>   // 用于消息框
+
 #include <QTextStream>   // 用于文件流操作
 #include <QSqlRecord>    // 用于操作数据库记录
 #include <QUuid>         // 用于生成唯一标识符

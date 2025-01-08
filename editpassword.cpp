@@ -22,13 +22,14 @@ void editpassword::on_btnconfirm_clicked()
 
     // 检查输入是否为空
     if (inputAccount.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-        QMessageBox::warning(this, "输入错误", "请输入完整的账号和密码！");
+        QMessageBox::warning(this, "输入错误",
+                             "<font size='10px' color='white'>请输入完整的账号和密码！</font>");
         return;
     }
 
     // 检查两次密码是否一致
     if (newPassword != confirmPassword) {
-        QMessageBox::warning(this, "密码错误", "两次输入的密码不一致！");
+        QMessageBox::warning(this, "密码错误", "<font size='10px' color='white'>两次输入的密码不一致！</font>");
         return;
     }
 
@@ -50,7 +51,8 @@ void editpassword::on_btnconfirm_clicked()
             epid = query.value("EMPLOYEE_NO").toString();
         } else {
             // 如果两个表都找不到，说明用户不存在
-            QMessageBox::warning(this, "用户不存在", "未找到该用户，请检查账号！");
+            QMessageBox::warning(this, "用户不存在",
+                                 "<font size='10px' color='white'>未找到该用户，请检查账号！</font>");
             return;
         }
     }
@@ -60,9 +62,10 @@ void editpassword::on_btnconfirm_clicked()
     query.bindValue(":newPassword", newPassword);
     query.bindValue(":epid", epid);
     if (query.exec()) {
-        QMessageBox::information(this, "修改成功", "密码已成功修改！");
+        QMessageBox::information(this, "修改成功", "<font size='10px' color='white'>密码已成功修改！</font>");
     } else {
-        QMessageBox::critical(this, "修改失败", "修改密码时发生错误，请稍后重试！");
+        QMessageBox::critical(this, "修改失败",
+                              "<font size='10px' color='white'>修改密码时发生错误，请稍后重试！</font>");
     }
     emit goPerviousView();
 }

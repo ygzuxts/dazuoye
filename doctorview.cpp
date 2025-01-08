@@ -69,7 +69,7 @@ void DoctorView::on_btImport_clicked()
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, "错误", "无法打开文件！");
+        QMessageBox::warning(this, "错误", "<font size='10px' color='white'>无法打开文件！</font>");
         return;
     }
 
@@ -108,10 +108,11 @@ void DoctorView::on_btImport_clicked()
 
     // 提交所有更改
     if (model->submitAll()) {
-        QMessageBox::information(this, "完成", "批量导入成功！");
+        QMessageBox::information(this, "完成", "<font size='10px' color='white'>批量导入成功！</font>");
     } else {
         qDebug() << "SubmitAll error:" << model->lastError().text();
-        QMessageBox::warning(this, "错误", "提交数据失败: " + model->lastError().text());
+        QString message = "<font size='10px' color='white'>" + model->lastError().text() + "</font>";
+        QMessageBox::warning(this, "错误", "<font size='10px' color='white'>提交数据失败: </font>" + message);
     }
 
     file.close();
@@ -124,7 +125,7 @@ void DoctorView::on_btExport_clicked()
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, "错误", "无法创建文件！");
+        QMessageBox::warning(this, "错误", "<font size='10px' color='white'>无法创建文件！</font>");
         return;
     }
 
@@ -148,7 +149,7 @@ void DoctorView::on_btExport_clicked()
     }
 
     file.close();
-    QMessageBox::information(this, "完成", "批量导出成功！");
+    QMessageBox::information(this, "完成", "<font size='10px' color='white'>批量导出成功！</font>");
 }
 
 
