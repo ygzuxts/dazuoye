@@ -236,7 +236,7 @@ IDatabase::IDatabase(QObject *parent)
 void IDatabase::ininDatabase()
 {
     database = QSqlDatabase::addDatabase("QSQLITE");
-    QString aFile = "D:/LAB3.db";
+    QString aFile = QDir(QCoreApplication::applicationDirPath()).filePath("LABdesign.db");
     database.setDatabaseName(aFile);
 
     if (!database.open()) {
