@@ -82,6 +82,7 @@ bool IDatabase::deleteCurrentPatient()
     patientTabModel->removeRow(curIndex.row());
     patientTabModel->submitAll();
     patientTabModel->select();
+    return true;
 }
 
 
@@ -126,6 +127,7 @@ bool IDatabase::deleteCurrentdoctor()
     doctorTabModel->removeRow(curIndex.row());
     doctorTabModel->submitAll();
     doctorTabModel->select();
+    return true;
 }
 
 bool IDatabase::subitdoctorEdit()
@@ -163,6 +165,7 @@ bool IDatabase::deleteCurrentmedicine()
     medicineTabModel->removeRow(curIndex.row());
     medicineTabModel->submitAll();
     medicineTabModel->select();
+    return true;
 }
 
 bool IDatabase::subitrecordEdit()
@@ -200,6 +203,7 @@ bool IDatabase::deleteCurrentrecord()
     recordTabModel->removeRow(curIndex.row());
     recordTabModel->submitAll();
     recordTabModel->select();
+    return true;
 }
 
 
@@ -236,7 +240,7 @@ IDatabase::IDatabase(QObject *parent)
 void IDatabase::ininDatabase()
 {
     database = QSqlDatabase::addDatabase("QSQLITE");
-    QString aFile = QDir(QCoreApplication::applicationDirPath()).filePath("LABdesign.db");
+    QString aFile = QCoreApplication::applicationDirPath() + "/LABd.db";
     database.setDatabaseName(aFile);
 
     if (!database.open()) {
